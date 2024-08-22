@@ -4,11 +4,17 @@ import (
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
-func NewUserModule() *LessGo.Module {
+type UserModule struct {
+	LessGo.Module
+}
+
+func NewUserModule() *UserModule {
 	userService := NewUserService()
 	userController := NewUserController(userService, "/users")
-	return LessGo.NewModule("UserModule",
-		[]interface{}{userController}, // Controllers
-		[]interface{}{userService},    // Services
-	)
+	return &UserModule{
+		Module: *LessGo.NewModule("UserModule",
+			[]interface{}{userController}, // Controllers
+			[]interface{}{userService},    // Services
+		),
+	}
 }

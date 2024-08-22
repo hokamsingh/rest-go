@@ -4,11 +4,17 @@ import (
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
-func NewUploadModule() *LessGo.Module {
+type UploadModule struct {
+	LessGo.Module
+}
+
+func NewUploadModule() *UploadModule {
 	service := NewUploadService("uploads")
 	controller := NewUploadController(service, "/upload")
-	return LessGo.NewModule("UploadModule",
-		[]interface{}{controller},
-		[]interface{}{service},
-	)
+	return &UploadModule{
+		Module: *LessGo.NewModule("UploadModule",
+			[]interface{}{controller},
+			[]interface{}{service},
+		),
+	}
 }

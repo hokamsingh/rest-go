@@ -7,12 +7,16 @@ import (
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
-func NewRootModule(r *LessGo.Router, c *LessGo.Container) *LessGo.Module {
+type RootModule struct {
+	LessGo.Module
+}
+
+func NewRootModule(r *LessGo.Router, c *LessGo.Container) *RootModule {
 	// Initialize and collect all modules
-	modules := []LessGo.Module{
-		*test.NewTestModule(),
-		*upload.NewUploadModule(),
-		*user.NewUserModule(),
+	modules := []LessGo.IModule{
+		test.NewTestModule(),
+		upload.NewUploadModule(),
+		user.NewUserModule(),
 	}
 
 	// Register all modules
@@ -23,8 +27,9 @@ func NewRootModule(r *LessGo.Router, c *LessGo.Container) *LessGo.Module {
 	// 		log.Fatalf("Error registering Module routes: %v", err)
 	// 	}
 	// }
-
 	service := NewRootService()
 	controller := NewRootController(service, "/")
-	return LessGo.NewModule("root", []interface{}{controller}, []interface{}{service})
+	return &RootModule{
+		Module: *LessGo.NewModule("root", []interface{}{controller}, []interface{}{service}),
+	}
 }

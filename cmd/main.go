@@ -20,7 +20,7 @@ func main() {
 		[]string{"Content-Type", "Authorization"},           // Allowed headers
 	)
 
-	r := LessGo.NewRouter(
+	app := LessGo.App(
 		LessGo.WithCORS(*corsOptions),
 		LessGo.WithRateLimiter(100, 1*time.Minute),
 		LessGo.WithJSONParser(),
@@ -32,7 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error: %v", err)
 	}
-	r.ServeStatic("/static/", folderPath)
+	app.ServeStatic("/static/", folderPath)
 
 	container := LessGo.NewContainer()
 	if err := container.Register(user.NewUserService); err != nil {
@@ -69,8 +69,8 @@ func main() {
 
 	// Invoke and register Test Module routes
 	// Register routes for TestModule
-	rootModule := src.NewRootModule(r, container)
-	LessGo.RegisterModules(r, container, []LessGo.Module{*rootModule})
+	rootModule := src.NewRootModule(app, container)
+	LessGo.RegisterModules(app, container, []LessGo.Module{*rootModule})
 	// testModule := test.NewTestModule()
 	// uploadModule := upload.NewUploadModule()
 	// modules := []LessGo.Module{*testModule, *uploadModule}
@@ -83,7 +83,7 @@ func main() {
 	// })
 
 	// Define a custom route with new context
-	r.Get("/ping", func(ctx *LessGo.Context) {
+	app.Get("/ping", func(ctx *LessGo.Context) {
 		// ctx.JSON(200, map[string]string{"message": "pong"})
 		ctx.Send("pong")
 	})
@@ -129,7 +129,7 @@ func main() {
 	serverPort := cfg.Get("SERVER_PORT", "8080")
 	env := cfg.Get("ENV", "development")
 	log.Printf("Starting server on port %s in %s mode", serverPort, env)
-	if err := r.Start(":" + serverPort); err != nil {
+	if err := app.Listen(":" + serverPort); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }

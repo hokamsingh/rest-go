@@ -3,7 +3,7 @@ package src
 import (
 	"github.com/hokamsingh/lessgo/app/src/test"
 	"github.com/hokamsingh/lessgo/app/src/upload"
-	user "github.com/hokamsingh/lessgo/app/src/users"
+	user "github.com/hokamsingh/lessgo/app/src/user"
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -24,6 +24,6 @@ func NewRootModule(r *LessGo.Router) *RootModule {
 	service := NewRootService()
 	controller := NewRootController(service, "/")
 	return &RootModule{
-		Module: *LessGo.NewModule("root", []interface{}{controller}, []interface{}{service}, modules),
+		Module: *LessGo.NewModule("Root", []interface{}{controller}, []interface{}{service}, modules),
 	}
 }

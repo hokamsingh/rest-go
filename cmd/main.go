@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/hokamsingh/lessgo/app/src"
+	"github.com/hokamsingh/lessgo/app/src/upload"
+	user "github.com/hokamsingh/lessgo/app/src/user"
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 	// Ensure you're using the correct DI package
 )
@@ -12,7 +14,6 @@ import (
 func main() {
 	// Load Configuration
 	cfg := LessGo.LoadConfig()
-
 	// CORS Options
 	corsOptions := LessGo.NewCorsOptions(
 		[]string{"*"}, // Allow all origins
@@ -37,29 +38,27 @@ func main() {
 	App.ServeStatic("/static/", folderPath)
 
 	// Dependency Injection Container
-	// container := LessGo.NewContainer()
+	container := LessGo.NewContainer()
 
 	// Register Services
-	// if err := container.Register(user.NewUserService); err != nil {
-	// 	log.Fatalf("Error registering UserService: %v", err)
-	// }
-	// if err := container.Register(upload.NewUploadService); err != nil {
-	// 	log.Fatalf("Error registering UploadService: %v", err)
-	// }
-
-	// Register Modules (using module.IModule interface)
-	// if err := container.Register(user.NewUserModule); err != nil {
-	// 	log.Fatalf("Error registering UserModule: %v", err)
-	// }
-
-	// if err := container.Register(upload.NewUploadModule); err != nil {
-	// 	log.Fatalf("Error registering UploadModule: %v", err)
-	// }
-
-	_, err = LessGo.DiscoverModules()
-	if err != nil {
-		log.Fatalf("Error discovering modules: %v", err)
+	if err := container.Register(user.NewUserService); err != nil {
+		log.Fatalf("Error registering UserService: %v", err)
 	}
+	if err := container.Register(upload.NewUploadService); err != nil {
+		log.Fatalf("Error registering UploadService: %v", err)
+	}
+	// Register Modules (using module.IModule interface)
+	if err := container.Register(user.NewUserModule); err != nil {
+		log.Fatalf("Error registering UserModule: %v", err)
+	}
+	if err := container.Register(upload.NewUploadModule); err != nil {
+		log.Fatalf("Error registering UploadModule: %v", err)
+	}
+
+	// _, err = LessGo.DiscoverModules()
+	// if err != nil {
+	// 	log.Fatalf("Error discovering modules: %v", err)
+	// }
 
 	// Root Module
 	rootModule := src.NewRootModule(App)

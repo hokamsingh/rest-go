@@ -12,7 +12,7 @@ func NewUploadModule() *UploadModule {
 	service := NewUploadService("uploads")
 	controller := NewUploadController(service, "/upload")
 	return &UploadModule{
-		Module: *LessGo.NewModule("UploadModule",
+		Module: *LessGo.NewModule("Upload",
 			[]interface{}{controller},
 			[]interface{}{service},
 			[]LessGo.IModule{},

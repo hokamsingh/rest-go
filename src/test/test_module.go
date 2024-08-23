@@ -15,7 +15,7 @@ func NewTestModule() *TestModule {
 
 	return &TestModule{
 		Module: *LessGo.NewModule( // You need to initialize the embedded Module field
-			"TestModule",                  // Name of the module
+			"Test",                        // Name of the module
 			[]interface{}{testController}, // Controllers
 			[]interface{}{testService},    // Services
 			[]LessGo.IModule{},

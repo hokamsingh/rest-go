@@ -11,25 +11,18 @@ type RootModule struct {
 	LessGo.Module
 }
 
-func NewRootModule(r *LessGo.Router, c *LessGo.Container) *RootModule {
+func NewRootModule(r *LessGo.Router) *RootModule {
 	// Initialize and collect all modules
 	modules := []LessGo.IModule{
 		test.NewTestModule(),
 		upload.NewUploadModule(),
 		user.NewUserModule(),
 	}
-
 	// Register all modules
-	LessGo.RegisterModules(r, c, modules)
-	// for _, mod := range modules {
-	// 	err := LessGo.RegisterModuleRoutes(r, c, mod)
-	// 	if err != nil {
-	// 		log.Fatalf("Error registering Module routes: %v", err)
-	// 	}
-	// }
+	LessGo.RegisterModules(r, modules)
 	service := NewRootService()
 	controller := NewRootController(service, "/")
 	return &RootModule{
-		Module: *LessGo.NewModule("root", []interface{}{controller}, []interface{}{service}),
+		Module: *LessGo.NewModule("root", []interface{}{controller}, []interface{}{service}, modules),
 	}
 }

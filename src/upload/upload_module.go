@@ -15,6 +15,7 @@ func NewUploadModule() *UploadModule {
 		Module: *LessGo.NewModule("UploadModule",
 			[]interface{}{controller},
 			[]interface{}{service},
+			[]LessGo.IModule{},
 		),
 	}
 }

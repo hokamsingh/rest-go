@@ -15,6 +15,7 @@ func NewUserModule() *UserModule {
 		Module: *LessGo.NewModule("UserModule",
 			[]interface{}{userController}, // Controllers
 			[]interface{}{userService},    // Services
+			[]LessGo.IModule{},
 		),
 	}
 }

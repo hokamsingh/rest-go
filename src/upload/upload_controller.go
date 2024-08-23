@@ -1,8 +1,6 @@
 package upload
 
 import (
-	"log"
-
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -20,8 +18,7 @@ func NewUploadController(service *UploadService, path string) *UploadController 
 }
 
 func (uc *UploadController) RegisterRoutes(r *LessGo.Router) {
-	ur := r.SubRouter("/upload")
-	log.Print(uc.Path)
+	ur := r.SubRouter(uc.Path, LessGo.WithFileUpload("uploads"))
 	ur.Get("/fs", func(ctx *LessGo.Context) {
 		ctx.Send("I am fs")
 	})

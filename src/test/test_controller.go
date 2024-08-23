@@ -1,8 +1,6 @@
 package test
 
 import (
-	"log"
-
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -23,11 +21,15 @@ func NewTestController(service *TestService, path string) *TestController {
 }
 
 func (tc *TestController) RegisterRoutes(r *LessGo.Router) {
-	tr := r.SubRouter("/test")
-	log.Print(tc.Path)
+	tr := r.SubRouter(tc.Path)
 	tr.Get("/ping", func(ctx *LessGo.Context) {
 		// ctx.JSON(200, map[string]string{"message": "pong"})
 		ctx.Send("pong")
+	})
+
+	tr.Get("/info", func(ctx *LessGo.Context) {
+		info := tc.Service.DoSomething()
+		ctx.Send(info)
 	})
 
 	tr.Get("/user/{id}", func(ctx *LessGo.Context) {

@@ -18,6 +18,7 @@ func NewTestModule() *TestModule {
 			"TestModule",                  // Name of the module
 			[]interface{}{testController}, // Controllers
 			[]interface{}{testService},    // Services
+			[]LessGo.IModule{},
 		),
 	}
 }

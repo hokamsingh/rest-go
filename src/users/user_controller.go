@@ -1,8 +1,6 @@
 package user
 
 import (
-	"log"
-
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -23,8 +21,7 @@ func NewUserController(service *UserService, path string) *UserController {
 }
 
 func (uc *UserController) RegisterRoutes(r *LessGo.Router) {
-	tr := r.SubRouter("/users")
-	log.Print(uc.Path)
+	tr := r.SubRouter(uc.Path)
 	tr.Get("/ping", func(ctx *LessGo.Context) {
 		// ctx.JSON(200, map[string]string{"message": "pong"})
 		ctx.Send("pong")

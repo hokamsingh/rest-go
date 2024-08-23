@@ -18,6 +18,7 @@ func NewRootModule(r *LessGo.Router) *RootModule {
 		upload.NewUploadModule(),
 		user.NewUserModule(),
 	}
+
 	// Register all modules
 	LessGo.RegisterModules(r, modules)
 	service := NewRootService()

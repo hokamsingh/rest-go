@@ -1,9 +1,16 @@
 package main
 
 import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/hokamsingh/lessgo/internal/core/concurrency"
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
-	// Ensure you're using the correct DI package
 )
+
+// Ensure you're using the correct DI package
 
 func main() {
 	// // Load Configuration
@@ -71,6 +78,67 @@ func main() {
 	// 	log.Fatalf("Server failed: %v", err)
 	// }
 	// WS
-	ws := LessGo.NewWebSocketServer()
-	ws.NewWsServer(":8080")
+	// ws := LessGo.NewWebSocketServer()
+	// ws.NewWsServer(":8080")
+	// Create a custom logger with timestamps
+	logger := log.New(log.Writer(), "", log.LstdFlags)
+
+	// Create a background context
+	ctx := context.Background()
+
+	fmt.Println("Parallel Execution:")
+	tbParallel := LessGo.NewTaskBuilder(LessGo.Parallel)
+	results, err := tbParallel.
+		Add(func(ctx context.Context) (interface{}, error) {
+			start := time.Now()
+			logger.Printf("Task A started at %v", start)
+			time.Sleep(1 * time.Second)
+			end := time.Now()
+			logger.Printf("Task A completed at %v", end)
+			return "Task A completed", nil
+		}).
+		Add(func(ctx context.Context) (interface{}, error) {
+			start := time.Now()
+			logger.Printf("Task B started at %v", start)
+			time.Sleep(1 * time.Second)
+			end := time.Now()
+			logger.Printf("Task B completed at %v", end)
+			return "Task B completed", nil
+		}).
+		Run(ctx)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println("Results:", results)
+	}
+
+	fmt.Println("Sequential Execution:")
+	tbSequential := concurrency.NewTaskBuilder(concurrency.Sequential)
+	results, err = tbSequential.
+		Add(func(ctx context.Context) (interface{}, error) {
+			start := time.Now()
+			logger.Printf("Task A started at %v", start)
+			time.Sleep(2 * time.Second)
+			end := time.Now()
+			logger.Printf("Task A completed at %v", end)
+			return "Task A completed", nil
+		}).
+		Add(func(ctx context.Context) (interface{}, error) {
+			start := time.Now()
+			logger.Printf("Task B started at %v", start)
+			time.Sleep(1 * time.Second)
+			end := time.Now()
+			logger.Printf("Task B completed at %v", end)
+			return "Task B completed", nil
+		}).
+		Run(ctx)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		// 10.258 microseconds
+		fmt.Println("Results:", results)
+	}
+
 }

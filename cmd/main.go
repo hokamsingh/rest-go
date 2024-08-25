@@ -1,3 +1,11 @@
+// main.go
+
+// @title My API
+// @version 1.0
+// @description This is a sample server.
+// @host localhost:8080
+// @BasePath /
+
 package main
 
 import (
@@ -5,15 +13,16 @@ import (
 	"time"
 
 	"github.com/hokamsingh/lessgo/app/src"
-	"github.com/hokamsingh/lessgo/app/src/upload"
-	"github.com/hokamsingh/lessgo/app/src/user"
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
-// Ensure you're using the correct DI package
 func main() {
 	// Load Configuration
 	cfg := LessGo.LoadConfig()
+	serverPort := cfg.Get("SERVER_PORT", "8080")
+	env := cfg.Get("ENV", "development")
+	addr := ":" + serverPort
+
 	// CORS Options
 	corsOptions := LessGo.NewCorsOptions(
 		[]string{"*"}, // Allow all origins
@@ -31,34 +40,15 @@ func main() {
 	)
 
 	// Serve Static Files
-	folderPath, err := LessGo.GetFolderPath("uploads")
-	if err != nil {
-		log.Fatalf("Error: %v", err)
-	}
+	folderPath, _ := LessGo.GetFolderPath("uploads")
 	App.ServeStatic("/static/", folderPath)
 
 	// Dependency Injection Container
 	container := LessGo.NewContainer()
 
-	// Register Services
-	if err := container.Register(user.NewUserService); err != nil {
-		log.Fatalf("Error registering UserService: %v", err)
-	}
-	if err := container.Register(upload.NewUploadService); err != nil {
-		log.Fatalf("Error registering UploadService: %v", err)
-	}
-	// Register Modules (using module.IModule interface)
-	if err := container.Register(user.NewUserModule); err != nil {
-		log.Fatalf("Error registering UserModule: %v", err)
-	}
-	if err := container.Register(upload.NewUploadModule); err != nil {
-		log.Fatalf("Error registering UploadModule: %v", err)
-	}
-
-	// _, err = LessGo.DiscoverModules()
-	// if err != nil {
-	// 	log.Fatalf("Error discovering modules: %v", err)
-	// }
+	// Register dependencies
+	dependencies := []interface{}{src.NewRootService, src.NewRootModule}
+	LessGo.RegisterDependencies(*container, dependencies)
 
 	// Root Module
 	rootModule := src.NewRootModule(App)
@@ -70,10 +60,8 @@ func main() {
 	})
 
 	// Start the server
-	serverPort := cfg.Get("SERVER_PORT", "8080")
-	env := cfg.Get("ENV", "development")
 	log.Printf("Starting server on port %s in %s mode", serverPort, env)
-	if err := App.Listen(":" + serverPort); err != nil {
+	if err := App.Listen(addr); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }

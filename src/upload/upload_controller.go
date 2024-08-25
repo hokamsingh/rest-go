@@ -5,7 +5,6 @@ import (
 )
 
 type UploadController struct {
-	LessGo.BaseController
 	Path    string
 	Service UploadService
 }

@@ -29,12 +29,14 @@ func main() {
 		[]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // Allowed methods
 		[]string{"Content-Type", "Authorization"},           // Allowed headers
 	)
+	size, _ := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
+	parserOptions := LessGo.NewParserOptions(size)
 
 	// Initialize App
 	App := LessGo.App(
 		LessGo.WithCORS(*corsOptions),
 		LessGo.WithRateLimiter(100, 1*time.Minute),
-		LessGo.WithJSONParser(),
+		LessGo.WithJSONParser(*parserOptions),
 		LessGo.WithCookieParser(),
 		// LessGo.WithFileUpload("uploads"),
 	)

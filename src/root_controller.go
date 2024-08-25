@@ -3,7 +3,6 @@ package src
 import LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 
 type RootController struct {
-	LessGo.BaseController
 	Path    string
 	Service RootService
 }

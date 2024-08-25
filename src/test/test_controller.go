@@ -5,7 +5,6 @@ import (
 )
 
 type TestController struct {
-	LessGo.BaseController
 	Path    string
 	Service TestService
 }

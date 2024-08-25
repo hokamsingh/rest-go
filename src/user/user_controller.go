@@ -6,7 +6,6 @@ import (
 
 // UserController is the controller for handling user-related requests.
 type UserController struct {
-	LessGo.BaseController
 	Path    string
 	Service UserService
 }

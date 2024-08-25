@@ -1,28 +1,17 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"time"
 
 	"github.com/hokamsingh/lessgo/app/src"
 	"github.com/hokamsingh/lessgo/app/src/upload"
 	"github.com/hokamsingh/lessgo/app/src/user"
-	"github.com/hokamsingh/lessgo/internal/core/concurrency"
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
 // Ensure you're using the correct DI package
-
 func main() {
-	// TaskRunner()
-	go ApiServer(":9001")
-	go ApiServer(":9002")
-	select {}
-}
-
-func ApiServer(addr string) {
 	// Load Configuration
 	cfg := LessGo.LoadConfig()
 	// CORS Options
@@ -84,72 +73,7 @@ func ApiServer(addr string) {
 	serverPort := cfg.Get("SERVER_PORT", "8080")
 	env := cfg.Get("ENV", "development")
 	log.Printf("Starting server on port %s in %s mode", serverPort, env)
-	if err := App.Listen(addr); err != nil {
+	if err := App.Listen(":" + serverPort); err != nil {
 		log.Fatalf("Server failed: %v", err)
-	}
-	// ws := LessGo.NewWebSocketServer()
-	// ws.NewWsServer(":8080")
-}
-
-func TaskRunner() {
-	// Create a custom logger with timestamps
-	logger := log.New(log.Writer(), "", log.LstdFlags)
-
-	// Create a background context
-	ctx := context.Background()
-
-	fmt.Println("Parallel Execution:")
-	tbParallel := LessGo.NewTaskBuilder(LessGo.Parallel)
-	results, err := tbParallel.
-		Add(func(ctx context.Context) (interface{}, error) {
-			start := time.Now()
-			logger.Printf("Task A started at %v", start)
-			time.Sleep(1 * time.Second)
-			end := time.Now()
-			logger.Printf("Task A completed at %v", end)
-			return "Task A completed", nil
-		}).
-		Add(func(ctx context.Context) (interface{}, error) {
-			start := time.Now()
-			logger.Printf("Task B started at %v", start)
-			time.Sleep(1 * time.Second)
-			end := time.Now()
-			logger.Printf("Task B completed at %v", end)
-			return "Task B completed", nil
-		}).
-		Run(ctx)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		fmt.Println("Results:", results)
-	}
-
-	fmt.Println("Sequential Execution:")
-	tbSequential := concurrency.NewTaskBuilder(concurrency.Sequential)
-	results, err = tbSequential.
-		Add(func(ctx context.Context) (interface{}, error) {
-			start := time.Now()
-			logger.Printf("Task A started at %v", start)
-			time.Sleep(2 * time.Second)
-			end := time.Now()
-			logger.Printf("Task A completed at %v", end)
-			return "Task A completed", nil
-		}).
-		Add(func(ctx context.Context) (interface{}, error) {
-			start := time.Now()
-			logger.Printf("Task B started at %v", start)
-			time.Sleep(1 * time.Second)
-			end := time.Now()
-			logger.Printf("Task B completed at %v", end)
-			return "Task B completed", nil
-		}).
-		Run(ctx)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-	} else {
-		// 10.258 microseconds
-		fmt.Println("Results:", results)
 	}
 }

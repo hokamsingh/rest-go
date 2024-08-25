@@ -43,12 +43,9 @@ func main() {
 	folderPath, _ := LessGo.GetFolderPath("uploads")
 	App.ServeStatic("/static/", folderPath)
 
-	// Dependency Injection Container
-	container := LessGo.NewContainer()
-
 	// Register dependencies
 	dependencies := []interface{}{src.NewRootService, src.NewRootModule}
-	LessGo.RegisterDependencies(*container, dependencies)
+	LessGo.RegisterDependencies(dependencies)
 
 	// Root Module
 	rootModule := src.NewRootModule(App)

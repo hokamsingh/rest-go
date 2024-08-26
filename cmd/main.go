@@ -29,17 +29,21 @@ func main() {
 		[]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // Allowed methods
 		[]string{"Content-Type", "Authorization"},           // Allowed headers
 	)
-	// parser options
+
+	// Parser Options
 	size, _ := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
 	parserOptions := LessGo.NewParserOptions(size)
 
-	// Initialize App
+	// Initialize App with Middlewares
 	App := LessGo.App(
 		LessGo.WithCORS(*corsOptions),
-		LessGo.WithRateLimiter(100, 1*time.Minute),
+		LessGo.WithRateLimiter(100, 1*time.Minute, 1*time.Minute), // Rate limiter
 		LessGo.WithJSONParser(*parserOptions),
-		LessGo.WithCookieParser(),
-		// LessGo.WithFileUpload("uploads"),
+		LessGo.WithCookieParser(),                       // Cookie parser
+		LessGo.WithCsrf(),                               // CSRF protection middleware
+		LessGo.WithXss(),                                // XSS protection middleware
+		LessGo.WithCaching("redis:6379", 5*time.Minute), // Caching middleware using Redis
+		// LessGo.WithFileUpload("uploads"), // Uncomment if you want to handle file uploads
 	)
 
 	// Serve Static Files

@@ -1,6 +1,8 @@
 package test
 
 import (
+	"net/http"
+
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -46,7 +48,7 @@ func (tc *TestController) RegisterRoutes(r *LessGo.Router) {
 		cookie, ok := ctx.GetCookie("auth_token")
 		if !ok {
 			// ctx.Error(400, "Bad Request")
-			ctx.SetCookie("auth_token", "0xc000013a", 60, "")
+			ctx.SetCookie("auth_token", "0xc000013a", 60, "", true, false, http.SameSiteDefaultMode)
 		}
 		ctx.JSON(200, map[string]interface{}{
 			"params":      params,

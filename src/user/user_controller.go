@@ -1,6 +1,8 @@
 package user
 
 import (
+	"net/http"
+
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
 
@@ -51,7 +53,7 @@ func (uc *UserController) RegisterRoutes(r *LessGo.Router) {
 		ctx.SetHeader("X-Custom-Header", "MyValue")
 		cookie, ok := ctx.GetCookie("auth_token")
 		if !ok {
-			ctx.SetCookie("auth_token", "0xc000013a", 60, "")
+			ctx.SetCookie("auth_token", "0xc000013a", 60, "", true, false, http.SameSiteDefaultMode)
 		}
 		ctx.JSON(200, map[string]interface{}{
 			"params":      params,

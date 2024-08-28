@@ -17,7 +17,8 @@ func NewUploadController(service *UploadService, path string) *UploadController 
 }
 
 func (uc *UploadController) RegisterRoutes(r *LessGo.Router) {
-	ur := r.SubRouter(uc.Path, LessGo.WithFileUpload("uploads"))
+	size := int64(5 * 1024 * 1024) // 5 mb in bytes
+	ur := r.SubRouter(uc.Path, LessGo.WithFileUpload("uploads", size, []string{".jpg", ".png"}))
 
 	ur.Post("/files", func(ctx *LessGo.Context) {
 		ctx.Send("file saved")

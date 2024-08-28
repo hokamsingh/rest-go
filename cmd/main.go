@@ -37,12 +37,13 @@ func main() {
 	// Initialize App with Middlewares
 	App := LessGo.App(
 		LessGo.WithCORS(*corsOptions),
-		LessGo.WithRateLimiter(100, 1*time.Minute, 1*time.Minute), // Rate limiter
+		// LessGo.WithInMemoryRateLimiter(4, 50, 1*time.Second, 5*time.Minute), // Rate limiter
+		// LessGo.WithRedisRateLimiter("localhost:6379", 10, time.Minute*5),
 		LessGo.WithJSONParser(*parserOptions),
-		LessGo.WithCookieParser(),                           // Cookie parser
-		LessGo.WithCsrf(),                                   // CSRF protection middleware
-		LessGo.WithXss(),                                    // XSS protection middleware
-		LessGo.WithCaching("localhost:6379", 5*time.Minute), // Caching middleware using Redis
+		LessGo.WithCookieParser(), // Cookie parser
+		LessGo.WithCsrf(),         // CSRF protection middleware
+		LessGo.WithXss(),          // XSS protection middleware
+		LessGo.WithCaching("localhost:6379", 5*time.Minute, true), // Caching middleware using Redis
 		// LessGo.WithFileUpload("uploads"), // Uncomment if you want to handle file uploads
 	)
 

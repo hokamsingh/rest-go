@@ -32,7 +32,7 @@ func main() {
 
 	// Parser Options
 	size, _ := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
-	parserOptions := LessGo.NewParserOptions(size)
+	parserOptions := LessGo.NewParserOptions(size * 5)
 
 	// Initialize App with Middlewares
 	App := LessGo.App(

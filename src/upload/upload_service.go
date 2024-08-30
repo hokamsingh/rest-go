@@ -1,10 +1,12 @@
 package upload
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	LessGo "github.com/hokamsingh/lessgo/pkg/lessgo"
 )
@@ -22,6 +24,10 @@ func NewUploadService(uploadDir string) *UploadService {
 
 func (s *UploadService) SaveFile(file http.File, fileName string) (string, error) {
 	filePath := filepath.Join(s.UploadDir, fileName)
+	cleanFilePath := filepath.Clean(filePath)
+	if !strings.HasPrefix(cleanFilePath, s.UploadDir) {
+		return "", errors.New("invalid file path")
+	}
 	destFile, err := os.Create(filePath)
 	if err != nil {
 		return "", err

@@ -31,7 +31,7 @@ func main() {
 	)
 
 	// Parser Options
-	size, _ := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
+	size := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
 	parserOptions := LessGo.NewParserOptions(size * 5)
 
 	// redis client
@@ -51,7 +51,7 @@ func main() {
 	)
 
 	// Serve Static Files
-	folderPath, _ := LessGo.GetFolderPath("uploads")
+	folderPath := LessGo.GetFolderPath("uploads")
 	App.ServeStatic("/static/", folderPath)
 
 	// Register dependencies

@@ -34,16 +34,19 @@ func main() {
 	size, _ := LessGo.ConvertToBytes(int64(1024), LessGo.Kilobytes)
 	parserOptions := LessGo.NewParserOptions(size * 5)
 
+	// redis client
+	rClient := LessGo.NewRedisClient("localhost:6379")
+
 	// Initialize App with Middlewares
 	App := LessGo.App(
 		LessGo.WithCORS(*corsOptions),
 		// LessGo.WithInMemoryRateLimiter(4, 50, 1*time.Second, 5*time.Minute), // Rate limiter
 		// LessGo.WithRedisRateLimiter("localhost:6379", 10, time.Minute*5),
 		LessGo.WithJSONParser(*parserOptions),
-		LessGo.WithCookieParser(), // Cookie parser
-		LessGo.WithCsrf(),         // CSRF protection middleware
-		LessGo.WithXss(),          // XSS protection middleware
-		LessGo.WithCaching("localhost:6379", 5*time.Minute, true), // Caching middleware using Redis
+		LessGo.WithCookieParser(),                        // Cookie parser
+		LessGo.WithCsrf(),                                // CSRF protection middleware
+		LessGo.WithXss(),                                 // XSS protection middleware
+		LessGo.WithCaching(rClient, 5*time.Minute, true), // Caching middleware using Redis
 		// LessGo.WithFileUpload("uploads"), // Uncomment if you want to handle file uploads
 	)
 
@@ -66,6 +69,7 @@ func main() {
 
 	// Start the server
 	log.Printf("Starting server on port %s in %s mode", serverPort, env)
+	// LessGo.PProfiling()
 	if err := App.Listen(addr); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}

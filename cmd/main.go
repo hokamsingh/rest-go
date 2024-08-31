@@ -47,6 +47,7 @@ func main() {
 		LessGo.WithCsrf(),                                // CSRF protection middleware
 		LessGo.WithXss(),                                 // XSS protection middleware
 		LessGo.WithCaching(rClient, 5*time.Minute, true), // Caching middleware using Redis
+		LessGo.WithRedisRateLimiter(rClient, 100, 1*time.Second),
 		// LessGo.WithFileUpload("uploads"), // Uncomment if you want to handle file uploads
 	)
 

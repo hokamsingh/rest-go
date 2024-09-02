@@ -71,7 +71,8 @@ func main() {
 	// Start the server
 	log.Printf("Starting server on port %s in %s mode", serverPort, env)
 	// LessGo.PProfiling()
-	if err := App.Listen(addr); err != nil {
+	httpCfg := LessGo.NewHttpConfig()
+	if err := App.Listen(addr, httpCfg); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
